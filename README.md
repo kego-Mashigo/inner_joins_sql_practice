@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.jpg" alt="SQL JOINs Collaboration Project" width="100%">
+  <img src="04_assets/banner.jpg" alt="SQL JOINs Collaboration Project" width="100%">
 </p>
 
 
