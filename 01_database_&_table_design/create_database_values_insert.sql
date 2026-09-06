@@ -90,30 +90,4 @@ INSERT INTO Bank_Transactions.dbo.transactions (transaction_id, person_id, trans
 (49, 7, '2025-02-22', 'Insurance Payment',     -1100.00, 'Payment'),
 (50, 8, '2025-02-23', 'Freelance Payment',      3800.00, 'Deposit');
 
---SQL JOIN PRACTICE QUESTIONS — PART 2
---Tables: people, transactions (person_id links them)
-
---INNER JOIN
---20. List the description and amount of every transaction made by someone living in Durban.
-SELECT TOP (1000) A.[transaction_id]
-      ,A.[person_id]
-      ,A.[description]
-      ,A.[amount]
-      ,A.[transaction_type]
-      ,B.[first_name]
-      ,B.[last_name]
-      ,B.[city]
-  FROM [Bank_Transactions].[dbo].[transactions] A
-  INNER JOIN
-  [Bank_Transactions].[dbo].[people] B
-  ON A.person_id = B.person_id
-  WHERE City = 'Durban'
-
-
-     
-  
-
---21. Show the full name and email of every person who has made at least one withdrawal.
---22. Find all transactions made in January 2025, along with the person's full name.
---23. List every person-transaction pair where the transaction amount is negative (money going out).
 
