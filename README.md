@@ -37,8 +37,8 @@ The website was then deployed using Vercel.
 
 ### Contributors 👥
 
-**Kego Mashego**
-**Rofhiwa Muthivhi**
+- **Kego Mashego** 
+- **Rofhiwa Muthivhi**
 
 ### Live Website 🌐
 
