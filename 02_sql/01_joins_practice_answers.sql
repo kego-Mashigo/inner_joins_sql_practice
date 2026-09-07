@@ -46,7 +46,17 @@ SELECT A.[transaction_id]
 
 --22. Find all transactions made in January 2025, along with the person's full name.
 
-
+SELECT A.[transaction_id]
+      ,A.[person_id]
+      ,A.[transaction_date] 
+      ,B.[first_name]
+      ,B.[last_name] 
+  FROM [Bank_Transactions].[dbo].[transactions] A
+  INNER JOIN
+  [Bank_Transactions].[dbo].[people] B
+  ON A.person_id = B.person_id
+  WHERE transaction_date  BETWEEN '2025-01-01' AND '2025-01-31'
+ 
 --23. List every person-transaction pair where the transaction amount is negative (money going out).
 
 
