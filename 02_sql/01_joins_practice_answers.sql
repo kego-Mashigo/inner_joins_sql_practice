@@ -43,7 +43,6 @@ SELECT A.[transaction_id]
   ORDER BY first_name
 
 
-
 --22. Find all transactions made in January 2025, along with the person's full name.
 
 SELECT A.[transaction_id]
@@ -56,10 +55,25 @@ SELECT A.[transaction_id]
   [Bank_Transactions].[dbo].[people] B
   ON A.person_id = B.person_id
   WHERE transaction_date  BETWEEN '2025-01-01' AND '2025-01-31'
+
  
 --23. List every person-transaction pair where the transaction amount is negative (money going out).
+-- Business point of view:
+-- Payment = Money deducted from the perso's account when they made any form of payment.
+-- Withdrawal = Money deducted from the person's account when they request to get physical cash from the ATM.
 
-
+SELECT A.[transaction_id]
+      ,A.[person_id]
+      ,B.[first_name]
+      ,A.[amount]
+      ,A.[transaction_type]
+  FROM [Bank_Transactions].[dbo].[transactions] A
+  INNER JOIN
+  [Bank_Transactions].[dbo].[people] B
+  ON A.person_id = B.person_id
+  WHERE amount < 0  
+  ORDER BY transaction_type
+  
 --LEFT JOIN
 --24. List every person along with their most recent transaction date (NULL if they have none).
 
