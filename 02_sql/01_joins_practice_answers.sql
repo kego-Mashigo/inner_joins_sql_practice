@@ -26,8 +26,10 @@ SELECT A.[transaction_id]
   [Bank_Transactions].[dbo].[people] B
   ON A.person_id = B.person_id
   WHERE A.person_id > 1 AND transaction_type = 'Withdrawal'
+
    
--- If the question asked: name, email of every person who made more than one withdrawal
+-- If the question asked name and email of every person who made more than one withdrawal
+
 SELECT A.[transaction_id]
       ,A.[person_id]
       ,B.[first_name]
@@ -37,7 +39,8 @@ SELECT A.[transaction_id]
   INNER JOIN
   [Bank_Transactions].[dbo].[people] B
   ON A.person_id = B.person_id
-  WHERE A.person_id > 1 AND transaction_type = 'Withdrawal'
+  WHERE A.person_id > 2 AND transaction_type = 'Withdrawal'
+  ORDER BY first_name
 
 
 
