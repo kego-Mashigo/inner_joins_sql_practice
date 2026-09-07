@@ -94,6 +94,16 @@ ORDER BY recent_transaction_date DESC
 
 --25. Show all people and the number of transactions they've made, including 0 for those with none.
 
+SELECT  B.[person_id]
+       ,B.[first_name]
+       ,COUNT(A.[transaction_id]) AS number_of_transactions
+FROM [Bank_Transactions].[dbo].[people] B
+LEFT JOIN [Bank_Transactions].[dbo].[transactions] A
+ON B.person_id = A.person_id
+GROUP BY B.[person_id]
+        ,B.[first_name]
+ORDER BY number_of_transactions DESC;
+
 
 --26. Find people whose only transactions (if any) are deposits — including people with zero transactions.
 
