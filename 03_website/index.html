@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive SQL JOINs Learning Platform covering INNER, LEFT, RIGHT, FULL OUTER, CROSS and SELF JOINs.">
+  <title>SQL JOINs Learning Platform</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #08111f;
+      --panel: #0e1b2d;
+      --panel-2: #12243a;
+      --text: #edf5ff;
+      --muted: #a9bad0;
+      --accent: #38bdf8;
+      --accent-2: #818cf8;
+      --border: rgba(255,255,255,.10);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.7;
+    }
+
+    .navbar {
+      background: rgba(8,17,31,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    .nav-link { color: var(--muted) !important; }
+    .nav-link:hover { color: white !important; }
+
+    .hero {
+      min-height: 78vh;
+      display: flex;
+      align-items: center;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(56,189,248,.16), transparent 30%),
+        radial-gradient(circle at 85% 30%, rgba(129,140,248,.18), transparent 30%),
+        linear-gradient(135deg, #08111f 0%, #0c1728 55%, #101b31 100%);
+    }
+
+    .badge-soft {
+      display: inline-block;
+      padding: .45rem .8rem;
+      border: 1px solid rgba(56,189,248,.35);
+      border-radius: 999px;
+      color: #bfeaff;
+      background: rgba(56,189,248,.08);
+      font-size: .85rem;
+      font-weight: 700;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      line-height: 1.02;
+      font-weight: 900;
+      letter-spacing: -2px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 720px;
+    }
+
+    .btn-main {
+      background: linear-gradient(90deg, #38bdf8, #6366f1);
+      border: 0;
+      color: white;
+      font-weight: 800;
+      padding: .8rem 1.25rem;
+      border-radius: 10px;
+    }
+
+    .btn-main:hover { color: white; transform: translateY(-1px); }
+
+    .btn-outline-light { border-radius: 10px; }
+
+    section { padding: 90px 0; }
+
+    .section-label {
+      color: #7dd3fc;
+      text-transform: uppercase;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      font-weight: 850;
+      margin-top: .4rem;
+    }
+
+    .section-copy { color: var(--muted); }
+
+    .card-dark {
+      background: linear-gradient(145deg, rgba(18,36,58,.95), rgba(10,25,43,.95));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      height: 100%;
+      box-shadow: 0 15px 40px rgba(0,0,0,.18);
+    }
+
+    .join-card {
+      transition: transform .2s ease, border-color .2s ease;
+    }
+
+    .join-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(56,189,248,.4);
+    }
+
+    .join-number {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(56,189,248,.12);
+      color: #7dd3fc;
+      font-weight: 900;
+    }
+
+    .join-card p, .join-card li { color: var(--muted); }
+
+    .code-box {
+      background: #050b14;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      color: #dbeafe;
+      font-family: "Courier New", monospace;
+      font-size: .9rem;
+      white-space: pre;
+    }
+
+    .table-dark-custom {
+      --bs-table-bg: #0c1a2c;
+      --bs-table-color: #e8f1ff;
+      --bs-table-border-color: rgba(255,255,255,.09);
+    }
+
+    .table-dark-custom th {
+      color: #7dd3fc;
+      font-weight: 800;
+    }
+
+    .diagram {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #081421;
+      padding: 1.5rem;
+    }
+
+    .circle {
+      width: 125px;
+      height: 125px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      border: 2px solid rgba(255,255,255,.18);
+    }
+
+    .circle.left { background: rgba(56,189,248,.22); }
+    .circle.right { background: rgba(129,140,248,.22); }
+    .circle.overlap { background: rgba(255,255,255,.14); }
+
+    .quiz-option {
+      background: #0a1727;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      text-align: left;
+      width: 100%;
+      padding: .85rem 1rem;
+      margin-bottom: .6rem;
+    }
+
+    .quiz-option:hover { border-color: rgba(56,189,248,.5); }
+    .quiz-option.correct { border-color: #22c55e; background: rgba(34,197,94,.10); }
+    .quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,.10); }
+
+    .result-box {
+      display: none;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: rgba(56,189,248,.08);
+      border: 1px solid rgba(56,189,248,.25);
+    }
+
+    .cheat-item {
+      border-left: 3px solid #38bdf8;
+      padding-left: 1rem;
+      margin-bottom: 1.3rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 35px 0;
+      color: var(--muted);
+    }
+
+    .back-top {
+      color: #7dd3fc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container py-2">
+      <a class="navbar-brand text-white" href="#home">
+        <i class="bi bi-database"></i> SQL JOINs
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="#learn">Learn</a></li>
+          <li class="nav-item"><a class="nav-link" href="#examples">Examples</a></li>
+          <li class="nav-item"><a class="nav-link" href="#comparison">Compare</a></li>
+          <li class="nav-item"><a class="nav-link" href="#quiz">Quiz</a></li>
+          <li class="nav-item"><a class="nav-link" href="#cheatsheet">Cheat Sheet</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="home">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-8">
+          <span class="badge-soft">SQL LEARNING PLATFORM</span>
+          <h1 class="mt-4">Master <span class="gradient-text">SQL JOINs</span></h1>
+          <p class="mt-4">
+            Learn how SQL combines data from multiple tables. Understand what each JOIN does,
+            when to use it, and how the SQL syntax works through simple examples.
+          </p>
+          <div class="d-flex flex-wrap gap-3 mt-4">
+            <a href="#learn" class="btn btn-main">Start Learning <i class="bi bi-arrow-down ms-1"></i></a>
+            <a href="#quiz" class="btn btn-outline-light">Test Your Knowledge</a>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card-dark p-4">
+            <div class="section-label">JOIN MAP</div>
+            <h4 class="fw-bold mt-2">Connect tables. Understand relationships.</h4>
+            <div class="code-box mt-3">SELECT *
+FROM customers C
+JOIN orders O
+  ON C.customer_id = O.customer_id;</div>
+            <small class="text-secondary">The ON condition tells SQL how the tables are related.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="learn">
+    <div class="container">
+      <div class="section-label">01 — Learn</div>
+      <h2 class="section-title">The JOIN family</h2>
+      <p class="section-copy mb-5">
+        A JOIN allows you to bring related data together from two or more tables.
+        The main difference between JOIN types is which rows are kept in the result.
+      </p>
+
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="card-dark join-card p-4">
+            <div class="join-number mb-3">01</div>
+            <h4 class="fw-bold">INNER JOIN</h4>
+            <p>Returns only rows where a match exists in both tables.</p>
+            <ul>
+              <li>Best for matching records</li>
+              <li>Unmatched rows are removed</li>
+            </ul>
+            <a href="#inner" class="btn btn-sm btn-outline-info">Explore</a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card-dark join-card p-4">
+            <div class="join-number mb-3">02</div>
+            <h4 class="fw-bold">LEFT JOIN</h4>
+            <p>Returns every row from the left table and matching rows from the right.</p>
+            <ul>
+              <li>All left rows remain</li>
+              <li>Missing right values become NULL</li>
+            </ul>
+            <a href="#left" class="btn btn-sm btn-outline-info">Explore</a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card-dark join-card p-4">
+            <div class="join-number mb-3">03</div>
+            <h4 class="fw-bold">RIGHT JOIN</h4>
+            <p>Returns every row from the right table and matching rows from the left.</p>
+            <ul>
+              <li>All right rows remain</li>
+              <li>Missing left values become NULL</li>
+            </ul>
+            <a href="#right" class="btn btn-sm btn-outline-info">Explore</a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card-dark join-card p-4">
+            <div class="join-number mb-3">04</div>
+            <h4 class="fw-bold">FULL OUTER JOIN</h4>
+            <p>Returns matched rows plus unmatched rows from both tables.</p>
+            <ul>
+              <li>Keeps both sides</li>
+              <li>Unmatched columns become NULL</li>
+            </ul>
+            <a href="#full" class="btn btn-sm btn-outline-info">Explore</a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card-dark join-card p-4">
+            <div class="join-number mb-3">05</div>
+            <h4 class="fw-bold">CROSS JOIN</h4>
+            <p>Creates every possible combination of rows between two tables.</p>
+            <ul>
+              <li>No matching condition required</li>
+              <li>Can create many rows</li>
+            </ul>
+            <a href="#cross" class="btn btn-sm btn-outline-info">Explore</a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="card-dark join-card p-4">
+            <div class="join-number mb-3">06</div>
+            <h4 class="fw-bold">SELF JOIN</h4>
+            <p>Joins a table to itself, usually to compare related rows within the same table.</p>
+            <ul>
+              <li>Uses table aliases</li>
+              <li>Useful for hierarchies</li>
+            </ul>
+            <a href="#self" class="btn btn-sm btn-outline-info">Explore</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="inner" class="bg-black bg-opacity-25">
+    <div class="container">
+      <div class="section-label">02 — JOIN TYPES</div>
+      <h2 class="section-title">INNER JOIN</h2>
+      <p class="section-copy">Think: <strong class="text-white">“Only give me the records that match.”</strong></p>
+
+      <div class="row g-4 mt-2">
+        <div class="col-lg-6">
+          <div class="diagram h-100">
+            <h5 class="fw-bold">Result idea</h5>
+            <div class="d-flex justify-content-center align-items-center gap-0 my-4">
+              <div class="circle left">Customers</div>
+              <div class="circle overlap">MATCH</div>
+              <div class="circle right">Orders</div>
+            </div>
+            <p class="text-secondary mb-0">Only the overlapping relationship is returned.</p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="code-box">SELECT
+    C.customer_id,
+    C.customer_name,
+    O.order_id
+FROM customers AS C
+INNER JOIN orders AS O
+    ON C.customer_id = O.customer_id;</div>
+          <div class="card-dark p-3 mt-3">
+            <strong>Use it when:</strong>
+            <span class="text-secondary">you only need records that exist in both tables.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="left">
+    <div class="container">
+      <div class="section-label">03 — JOIN TYPES</div>
+      <h2 class="section-title">LEFT JOIN</h2>
+      <p class="section-copy">Think: <strong class="text-white">“Keep everything from my left table.”</strong></p>
+
+      <div class="code-box mt-4">SELECT
+    C.customer_id,
+    C.customer_name,
+    O.order_id
+FROM customers AS C
+LEFT JOIN orders AS O
+    ON C.customer_id = O.customer_id;</div>
+
+      <div class="card-dark p-4 mt-4">
+        <h5 class="fw-bold">Important idea</h5>
+        <p class="text-secondary mb-0">
+          If a customer has no matching order, the customer still appears.
+          The order columns will contain <strong class="text-white">NULL</strong>.
+          This makes LEFT JOIN useful for finding records with no match.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="right" class="bg-black bg-opacity-25">
+    <div class="container">
+      <div class="section-label">04 — JOIN TYPES</div>
+      <h2 class="section-title">RIGHT JOIN</h2>
+      <p class="section-copy">Think: <strong class="text-white">“Keep everything from my right table.”</strong></p>
+
+      <div class="code-box mt-4">SELECT
+    C.customer_id,
+    C.customer_name,
+    O.order_id
+FROM customers AS C
+RIGHT JOIN orders AS O
+    ON C.customer_id = O.customer_id;</div>
+
+      <div class="card-dark p-4 mt-4">
+        <h5 class="fw-bold">Important idea</h5>
+        <p class="text-secondary mb-0">
+          Every row from the right table is retained. If no matching row exists
+          on the left, the left-side columns become <strong class="text-white">NULL</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="full">
+    <div class="container">
+      <div class="section-label">05 — JOIN TYPES</div>
+      <h2 class="section-title">FULL OUTER JOIN</h2>
+      <p class="section-copy">Think: <strong class="text-white">“Keep everything from both tables.”</strong></p>
+
+      <div class="code-box mt-4">SELECT
+    C.customer_id,
+    C.customer_name,
+    O.order_id
+FROM customers AS C
+FULL OUTER JOIN orders AS O
+    ON C.customer_id = O.customer_id;</div>
+
+      <div class="card-dark p-4 mt-4">
+        <h5 class="fw-bold">Important idea</h5>
+        <p class="text-secondary mb-0">
+          Matching rows are combined, while unmatched rows from either table are
+          also returned. Missing values appear as <strong class="text-white">NULL</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="cross" class="bg-black bg-opacity-25">
+    <div class="container">
+      <div class="section-label">06 — JOIN TYPES</div>
+      <h2 class="section-title">CROSS JOIN</h2>
+      <p class="section-copy">Think: <strong class="text-white">“Give me every possible combination.”</strong></p>
+
+      <div class="code-box mt-4">SELECT
+    C.customer_name,
+    P.product_name
+FROM customers AS C
+CROSS JOIN products AS P;</div>
+
+      <div class="card-dark p-4 mt-4">
+        <h5 class="fw-bold">Row multiplication</h5>
+        <p class="text-secondary mb-0">
+          If the first table has 4 rows and the second has 3 rows,
+          a CROSS JOIN can produce 4 × 3 = <strong class="text-white">12 combinations</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="self">
+    <div class="container">
+      <div class="section-label">07 — JOIN TYPES</div>
+      <h2 class="section-title">SELF JOIN</h2>
+      <p class="section-copy">Think: <strong class="text-white">“Compare rows inside the same table.”</strong></p>
+
+      <div class="code-box mt-4">SELECT
+    E.employee_name AS employee,
+    M.employee_name AS manager
+FROM employees AS E
+LEFT JOIN employees AS M
+    ON E.manager_id = M.employee_id;</div>
+
+      <div class="card-dark p-4 mt-4">
+        <h5 class="fw-bold">Why the aliases?</h5>
+        <p class="text-secondary mb-0">
+          The same table is used twice, so aliases such as <strong class="text-white">E</strong>
+          and <strong class="text-white">M</strong> let SQL distinguish the two roles.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="examples" class="bg-black bg-opacity-25">
+    <div class="container">
+      <div class="section-label">08 — PRACTICE</div>
+      <h2 class="section-title">See the difference</h2>
+      <p class="section-copy mb-4">
+        Imagine these two simple tables:
+      </p>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="card-dark p-3">
+            <h5 class="fw-bold">Customers</h5>
+            <div class="table-responsive">
+              <table class="table table-dark table-dark-custom table-bordered mb-0">
+                <thead><tr><th>customer_id</th><th>name</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>Ana</td></tr>
+                  <tr><td>2</td><td>Ben</td></tr>
+                  <tr><td>3</td><td>Cara</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-dark p-3">
+            <h5 class="fw-bold">Orders</h5>
+            <div class="table-responsive">
+              <table class="table table-dark table-dark-custom table-bordered mb-0">
+                <thead><tr><th>order_id</th><th>customer_id</th></tr></thead>
+                <tbody>
+                  <tr><td>101</td><td>1</td></tr>
+                  <tr><td>102</td><td>2</td></tr>
+                  <tr><td>103</td><td>4</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box mt-4">-- INNER JOIN
+SELECT C.name, O.order_id
+FROM customers C
+INNER JOIN orders O
+    ON C.customer_id = O.customer_id;</div>
+
+      <p class="text-secondary mt-3">
+        The INNER JOIN returns Ana/101 and Ben/102. Cara has no matching order,
+        while order 103 has no matching customer.
+      </p>
+    </div>
+  </section>
+
+  <section id="comparison">
+    <div class="container">
+      <div class="section-label">09 — COMPARE</div>
+      <h2 class="section-title">JOIN comparison</h2>
+      <p class="section-copy mb-4">A quick way to remember what each JOIN keeps.</p>
+
+      <div class="table-responsive">
+        <table class="table table-dark table-dark-custom table-bordered align-middle">
+          <thead>
+            <tr>
+              <th>JOIN</th>
+              <th>Left table</th>
+              <th>Right table</th>
+              <th>Main result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>INNER</strong></td><td>Matches only</td><td>Matches only</td><td>Intersection</td></tr>
+            <tr><td><strong>LEFT</strong></td><td>All rows</td><td>Matches</td><td>All left + matches</td></tr>
+            <tr><td><strong>RIGHT</strong></td><td>Matches</td><td>All rows</td><td>Matches + all right</td></tr>
+            <tr><td><strong>FULL OUTER</strong></td><td>All rows</td><td>All rows</td><td>Everything</td></tr>
+            <tr><td><strong>CROSS</strong></td><td>All combinations</td><td>All combinations</td><td>Cartesian product</td></tr>
+            <tr><td><strong>SELF</strong></td><td colspan="2">Same table</td><td>Rows compared within a table</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="quiz" class="bg-black bg-opacity-25">
+    <div class="container">
+      <div class="section-label">10 — QUIZ</div>
+      <h2 class="section-title">Test your JOIN knowledge</h2>
+      <p class="section-copy">Choose an answer. You will receive instant feedback.</p>
+
+      <div class="row g-4 mt-2">
+        <div class="col-lg-6">
+          <div class="card-dark p-4">
+            <h5 class="fw-bold">Question 1</h5>
+            <p>Which JOIN returns only matching rows from both tables?</p>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q1')">LEFT JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, true, 'q1')">INNER JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q1')">CROSS JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q1')">FULL OUTER JOIN</button>
+            <div id="q1" class="result-box"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-dark p-4">
+            <h5 class="fw-bold">Question 2</h5>
+            <p>Which JOIN keeps every row from the left table?</p>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q2')">INNER JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, true, 'q2')">LEFT JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q2')">RIGHT JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q2')">CROSS JOIN</button>
+            <div id="q2" class="result-box"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-dark p-4">
+            <h5 class="fw-bold">Question 3</h5>
+            <p>Which JOIN produces every possible row combination?</p>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q3')">SELF JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q3')">RIGHT JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, true, 'q3')">CROSS JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q3')">INNER JOIN</button>
+            <div id="q3" class="result-box"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-dark p-4">
+            <h5 class="fw-bold">Question 4</h5>
+            <p>Which JOIN is commonly used to connect employees to their managers in the same table?</p>
+            <button class="quiz-option" onclick="checkAnswer(this, true, 'q4')">SELF JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q4')">FULL OUTER JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q4')">CROSS JOIN</button>
+            <button class="quiz-option" onclick="checkAnswer(this, false, 'q4')">INNER JOIN</button>
+            <div id="q4" class="result-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cheatsheet">
+    <div class="container">
+      <div class="section-label">11 — CHEAT SHEET</div>
+      <h2 class="section-title">Remember it quickly</h2>
+
+      <div class="row g-4 mt-2">
+        <div class="col-md-6">
+          <div class="card-dark p-4">
+            <div class="cheat-item">
+              <h5 class="fw-bold">INNER = Match</h5>
+              <p class="text-secondary mb-0">Only rows that match on both sides.</p>
+            </div>
+            <div class="cheat-item">
+              <h5 class="fw-bold">LEFT = Keep left</h5>
+              <p class="text-secondary mb-0">Everything on the left, plus matches from the right.</p>
+            </div>
+            <div class="cheat-item mb-0">
+              <h5 class="fw-bold">RIGHT = Keep right</h5>
+              <p class="text-secondary mb-0">Everything on the right, plus matches from the left.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card-dark p-4">
+            <div class="cheat-item">
+              <h5 class="fw-bold">FULL = Keep both</h5>
+              <p class="text-secondary mb-0">All rows from both tables.</p>
+            </div>
+            <div class="cheat-item">
+              <h5 class="fw-bold">CROSS = Combine all</h5>
+              <p class="text-secondary mb-0">Every possible combination.</p>
+            </div>
+            <div class="cheat-item mb-0">
+              <h5 class="fw-bold">SELF = Same table</h5>
+              <p class="text-secondary mb-0">Compare or relate rows within one table.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-dark p-4 mt-4">
+        <h5 class="fw-bold">The JOIN formula</h5>
+        <div class="code-box mt-3">SELECT columns
+FROM table_a AS A
+[JOIN TYPE] table_b AS B
+    ON A.key = B.key;</div>
+        <p class="text-secondary mt-3 mb-0">
+          Start by asking: <strong class="text-white">Which table's rows must I keep?</strong>
+          That question often tells you which JOIN to choose.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-3">
+      <div>
+        <strong class="text-white">SQL JOINs Learning Platform</strong><br>
+        <small>Built as part of an SQL JOIN practice project.</small>
+      </div>
+      <a class="back-top" href="#home">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function checkAnswer(button, correct, resultId) {
+      const options = button.parentElement.querySelectorAll('.quiz-option');
+      options.forEach(option => {
+        option.disabled = true;
+      });
+
+      button.classList.add(correct ? 'correct' : 'wrong');
+
+      const result = document.getElementById(resultId);
+      result.style.display = 'block';
+
+      if (correct) {
+        result.innerHTML = '<strong>Correct!</strong> Great job.';
+      } else {
+        result.innerHTML = '<strong>Not quite.</strong> Review the JOIN comparison above and try the next question.';
+      }
+    }
+  </script>
+</body>
+</html>
