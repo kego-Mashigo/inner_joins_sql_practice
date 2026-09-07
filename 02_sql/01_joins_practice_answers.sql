@@ -16,6 +16,30 @@ SELECT TOP (1000) A.[transaction_id]
 
 --21. Show the full name and email of every person who has made at least one withdrawal.
 
+SELECT A.[transaction_id]
+      ,A.[person_id]
+      ,B.[first_name]
+      ,B.[email]
+      ,A.[transaction_type]   
+  FROM [Bank_Transactions].[dbo].[transactions] A
+  INNER JOIN
+  [Bank_Transactions].[dbo].[people] B
+  ON A.person_id = B.person_id
+  WHERE A.person_id > 1 AND transaction_type = 'Withdrawal'
+   
+-- If the question asked name, email of every person who made more than one withdrawal
+SELECT A.[transaction_id]
+      ,A.[person_id]
+      ,B.[first_name]
+      ,B.[email]
+      ,A.[transaction_type]   
+  FROM [Bank_Transactions].[dbo].[transactions] A
+  INNER JOIN
+  [Bank_Transactions].[dbo].[people] B
+  ON A.person_id = B.person_id
+  WHERE A.person_id > 1 AND transaction_type = 'Withdrawal'
+
+
 
 --22. Find all transactions made in January 2025, along with the person's full name.
 
