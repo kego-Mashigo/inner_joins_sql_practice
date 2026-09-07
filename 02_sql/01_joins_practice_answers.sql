@@ -8,11 +8,11 @@ SELECT TOP (1000) A.[transaction_id]
       ,B.[first_name]
       ,B.[last_name]
       ,B.[city]
-  FROM [Bank_Transactions].[dbo].[transactions] A
-  INNER JOIN
-  [Bank_Transactions].[dbo].[people] B
-  ON A.person_id = B.person_id
-  WHERE City = 'Durban'
+FROM [Bank_Transactions].[dbo].[transactions] A
+INNER JOIN
+[Bank_Transactions].[dbo].[people] B
+ON A.person_id = B.person_id
+WHERE City = 'Durban'
 
 --21. Show the full name and email of every person who has made at least one withdrawal.
 
@@ -21,11 +21,11 @@ SELECT A.[transaction_id]
       ,B.[first_name]
       ,B.[email]
       ,A.[transaction_type]   
-  FROM [Bank_Transactions].[dbo].[transactions] A
-  INNER JOIN
-  [Bank_Transactions].[dbo].[people] B
-  ON A.person_id = B.person_id
-  WHERE A.person_id > 1 AND transaction_type = 'Withdrawal'
+FROM [Bank_Transactions].[dbo].[transactions] A
+INNER JOIN
+[Bank_Transactions].[dbo].[people] B
+ON A.person_id = B.person_id
+WHERE A.person_id > 1 AND transaction_type = 'Withdrawal'
 
    
 -- If the question asked name and email of every person who made more than one withdrawal
@@ -35,12 +35,12 @@ SELECT A.[transaction_id]
       ,B.[first_name]
       ,B.[email]
       ,A.[transaction_type]   
-  FROM [Bank_Transactions].[dbo].[transactions] A
-  INNER JOIN
-  [Bank_Transactions].[dbo].[people] B
-  ON A.person_id = B.person_id
-  WHERE A.person_id > 2 AND transaction_type = 'Withdrawal'
-  ORDER BY first_name
+FROM [Bank_Transactions].[dbo].[transactions] A
+INNER JOIN
+[Bank_Transactions].[dbo].[people] B
+ON A.person_id = B.person_id
+WHERE A.person_id > 2 AND transaction_type = 'Withdrawal'
+ORDER BY first_name
 
 
 --22. Find all transactions made in January 2025, along with the person's full name.
@@ -50,11 +50,11 @@ SELECT A.[transaction_id]
       ,A.[transaction_date] 
       ,B.[first_name]
       ,B.[last_name] 
-  FROM [Bank_Transactions].[dbo].[transactions] A
-  INNER JOIN
-  [Bank_Transactions].[dbo].[people] B
-  ON A.person_id = B.person_id
-  WHERE transaction_date  BETWEEN '2025-01-01' AND '2025-01-31'
+FROM [Bank_Transactions].[dbo].[transactions] A
+INNER JOIN
+[Bank_Transactions].[dbo].[people] B
+ON A.person_id = B.person_id
+WHERE transaction_date  BETWEEN '2025-01-01' AND '2025-01-31'
 
  
 --23. List every person-transaction pair where the transaction amount is negative (money going out).
@@ -67,15 +67,29 @@ SELECT A.[transaction_id]
       ,B.[first_name]
       ,A.[amount]
       ,A.[transaction_type]
-  FROM [Bank_Transactions].[dbo].[transactions] A
-  INNER JOIN
-  [Bank_Transactions].[dbo].[people] B
-  ON A.person_id = B.person_id
-  WHERE amount < 0  
-  ORDER BY transaction_type
+FROM [Bank_Transactions].[dbo].[transactions] A
+INNER JOIN
+[Bank_Transactions].[dbo].[people] B
+ON A.person_id = B.person_id
+WHERE amount < 0  
+ORDER BY transaction_type
+
   
 --LEFT JOIN
 --24. List every person along with their most recent transaction date (NULL if they have none).
+
+SELECT A.[transaction_id]
+      ,A.[person_id]
+      ,B.[first_name]
+      ,MAX (A.[transaction_date]) AS recent_transaction_date
+FROM [Bank_Transactions].[dbo].[transactions] A
+LEFT JOIN
+[Bank_Transactions].[dbo].[people] B
+ON A.person_id = B.person_id
+GROUP BY  A.[transaction_id]
+         ,A.[person_id]
+         ,B.[first_name]
+ORDER BY recent_transaction_date DESC
 
 
 --25. Show all people and the number of transactions they've made, including 0 for those with none.
